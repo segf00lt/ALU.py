@@ -34,19 +34,19 @@ def OR(A, B):
 
     return result
 
-def MUX(a, b, control):
-    if ~control:
-        return a
+def MUX(A, B, ctrl):
+    if ctrl == 0:
+        return A
     else:
-        return b
+        return B
 
 def OVERFLOW(a, b, r):
-    pair_1 = a & b
-    pair_2 = ~a & ~b
-    r_1 = ~r
-    r_2 = r
-    out_1 = pair_1 & r_1
-    out_2 = pair_2 & r_2
+    pair_1 = a & b 
+    pair_2 = ~a & ~b 
+    r_1 = ~r 
+    r_2 = r 
+    out_1 = pair_1 & r_1 
+    out_2 = pair_2 & r_2 
 
     return out_1 | out_2
 
@@ -73,16 +73,20 @@ def ADD_SUB(A, B, OP):
 
     result = ''.join(str(i) for i in result)
 
-    return result, OVERFLOW(A[WORD-1], B[WORD-1], bit_sum), carry
+    return result, OVERFLOW(A[0], (OP ^ B[0]), bit_sum), carry
 
-def ALU(A, B, control):
+def ALU(A, B, ctrl_0, ctrl_1):
+    LOGIC_OUT = MUX( AND(A, B), OR(A, B), ctrl_0 )
+    ARITH_OUT, O, C = ADD_SUB(A, B, ctrl_0)
+    R = MUX(LOGIC_OUT, ARITH_OUT, ctrl_1)
+    Z = int(not (int(R, 2) | 0))
+    N = int(R[0], 2)
 
-    return R, Z, C, V
+    return R, Z, N, O, C
 
 if __name__ == '__main__':
-    a = bin_input(int(argv[1]))
-    b = bin_input(int(argv[2]))
-    print(ADD_SUB(a, b, 0))
-    print(ADD_SUB(a, b, 1))
-    print(AND(a, b))
-    print(OR(a, b))
+    A = bin_input(int(argv[1]))
+    B = bin_input(int(argv[2]))
+    ctrl_0 = int(argv[3])
+    ctrl_1 = int(argv[4])
+    print(ALU(A, B, ctrl_0, ctrl_1))
