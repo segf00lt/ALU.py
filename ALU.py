@@ -5,7 +5,6 @@
 from sys import argv
 
 WORD = 16
-SIGN_BIT = 15
 
 def bin_input(n):
     n = "{0:b}".format(n)
@@ -74,6 +73,9 @@ def ADD_SUB(A, B, OP):
     result = ''.join(str(i) for i in result)
 
     return result, OVERFLOW(A[0], (OP ^ B[0]), bit_sum), carry
+
+def MULTIPLY(A, B):
+    result = []
 
 def ALU(A, B, ctrl_0, ctrl_1):
     LOGIC_OUT = MUX( AND(A, B), OR(A, B), ctrl_0 )
